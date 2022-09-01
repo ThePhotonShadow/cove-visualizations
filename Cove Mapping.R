@@ -1,4 +1,4 @@
-setwd("C:/Users/pnkid/Desktop")
+setwd("C:/users/pnkid/Desktop")
 
 
 library(zipcodeR)
@@ -59,6 +59,7 @@ ggplot(gender_cove, aes(x=age, fill=Gender,group=Gender)) +
   xlab('Age') + 
   xlim(18,70)
 
+#Heath likes
 ggplot(gender_cove, aes(x=age, color=Gender)) +
   geom_histogram(fill="white", alpha=0.5, position=position_dodge(width=0.7)) +
   scale_color_discrete(labels=c("Female", "Male")) +
@@ -67,6 +68,38 @@ ggplot(gender_cove, aes(x=age, color=Gender)) +
   ylab('Attendance') +  
   xlab('Age') + 
   xlim(18,70)
+
+#Heath likes with custom bins
+
+gender_cove$bin <- ifelse(
+  gender_cove$age<23, "18-23", ifelse(
+    gender_cove$age<30, "23-30", ifelse(
+      gender_cove$age <40, "31-40", ifelse(
+        gender_cove$age <50, "41-50", ">50"
+      )
+    )))
+
+gender_cove$bin <- factor(gender_cove$bin, levels=c("18-23", "23-30", "31-40", "41-50", ">50"))
+
+ggplot(gender_cove, aes(x=bin, fill=Gender)) +
+  geom_bar(stat="identity", fill="white", alpha=0.5, position=position_dodge(width=0.7)) +
+  scale_color_discrete(labels=c("Female", "Male")) +
+  theme(text=element_text(size=16)) + 
+  scale_y_continuous(labels=scales::comma_format()) +
+  ylab('Attendance') +  
+  xlab('Age')
+
+ggplot(gender_cove, aes(x=as.factor(bin), fill=as.factor(Gender) )) + 
+  geom_bar(position=position_dodge(width=0.7)) +
+  scale_fill_discrete(labels=c("Female", "Male"), name="Gender") +
+  theme(text=element_text(size=30)) + 
+  scale_y_continuous(labels=scales::comma_format()) +
+  ylab('Attendance') +  
+  xlab('Age')
+  
+  
+
+
 
 zip_coord <- read_csv("zip_coord.csv")
 zip_coord$ZIP <- sub("^0+", "", zip_coord$ZIP)  
